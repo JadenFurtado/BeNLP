@@ -55,3 +55,5 @@ Lemmatization is preferred over Stemming because lemmatization does a morphologi
 Output: machine, care
 Explanation: The word Machine transforms to lowercase and retains the same word unlike Stemming. Also, the word caring is transformed to its lemma 'care' as the parts of speech variable (pos) is verb(v)
 In conclusion, these are the text preprocessing steps in NLP. Various python libraries like nltk, spaCy, and TextBlob can be used. Refer their documentation and try them out.
+
+<a href="https://towardsdatascience.com/text-preprocessing-in-natural-language-processing-using-python-6113ff5decd8">Link to the article is here</a>
