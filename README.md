@@ -1,3 +1,1 @@
-# BE Sem 7 NLP project
-
-Grammar autocorrect app
+# BE Sem 7 NLP Classwork
