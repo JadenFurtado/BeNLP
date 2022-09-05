@@ -1,43 +1,84 @@
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords 
+
+"""
+TO DO:
+●	Convert number words to numeric form
+●	Remove numbers
+●	Phrase extraction
+●	Script Validation
+"""
+import re
 import nltk
-from nltk.stem import PorterStemmer
-from nltk.stem import WordNetLemmatizer 
-ps = PorterStemmer()
+import pke
+from nltk.tokenize import sent_tokenize
+import contractions
+from nltk.tokenize import word_tokenize
+from bs4 import BeautifulSoup
 
-sentence = "Books are on the table"
+# silly test html
+raw_html = """<a href='#'>hi</a>            <b>.hello</b>. This is us. You'll"""
+cleantext = BeautifulSoup(raw_html, "lxml").text
 
-# tokenization
-words = word_tokenize(sentence)
-print("post tokenization:")
-print(words)
-"""
-# you can also use split() to convert the sentence into word list
-word = sentence.split()
-print(word)
-"""
-# lower case:
-sentence = sentence.lower()
-print("to lower case:")
-print(sentence)
+def removeWhiteSpaces(sentence):
+    sentence = " ".join(re.split("\s+", sentence, flags=re.UNICODE))
+    return sentence
 
-# stop word removal
-stop_words = set(stopwords.words('english')) 
-word_tokens = word_tokenize(sentence)
-  
-filtered_sentence = [w for w in word_tokens if not w in stop_words] 
-print("after stop words are removed")
-print(filtered_sentence)
 
-# stemming
-print("after stemming")
-for word in sentence.split():
-  print(ps.stem(word))
+def getSentences(text):
+    return sent_tokenize(text)
 
-# Lemmatization:
-lemmatizer = WordNetLemmatizer()
-# example for reference
-print("after lemmatization")
-print(lemmatizer.lemmatize("Machine", pos='n'))
-# pos: parts of speech tag, verb
-print(lemmatizer.lemmatize("caring", pos='v'))
+def removeContractions(text):
+    newText = list()
+    for sentece in text:
+        newText.append(contractions.fix(sentece))
+    return newText
+
+def removeSpecialChars(text):
+    newText = list()
+    for sentence in text:
+        newText.append(re.sub('[^A-Za-z0-9]+', ' ', sentence))
+    return newText
+def toLowerCase(text):
+    newText = list()
+    for sentence in text:
+        newText.append(sentence.lower())
+    return newText
+
+def textTokenize(text):
+    newList = list()
+    for sentence in text:
+        newList.append(word_tokenize(sentence))
+    return newList
+
+
+def keyPhraseExtraction(cleantext):
+    # initialize keyphrase extraction model, here TopicRank
+    extractor = pke.unsupervised.TopicRank()
+    extractor.load_document(
+        cleantext,
+        language='en',
+        normalization='stemming')
+
+    # select the keyphrase candidates, for TopicRank the longest sequences of 
+    # nouns and adjectives
+    extractor.candidate_selection(pos={'NOUN', 'PROPN', 'ADJ'})
+
+    # weight the candidates using a random walk. The threshold parameter sets the
+    # minimum similarity for clustering, and the method parameter defines the 
+    # linkage method
+    extractor.candidate_weighting(threshold=0.74,
+                                method='average')
+    keyPhraseList = list()
+    # print the n-highest (10) scored candidates
+    for (keyphrase, score) in extractor.get_n_best(n=1, stemming=True):
+        print(keyphrase, score)
+        keyPhraseList.append([keyphrase,score])
+    return keyPhraseList
+    
+
+text = removeWhiteSpaces(cleantext)
+text = getSentences(text)
+text = removeContractions(text)
+text = removeSpecialChars(text)
+text = toLowerCase(text)
+text = textTokenize(text)
+listOfKeyPhrases = keyPhraseExtraction(cleantext)
