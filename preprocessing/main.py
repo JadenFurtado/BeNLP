@@ -13,9 +13,10 @@ from nltk.tokenize import sent_tokenize
 import contractions
 from nltk.tokenize import word_tokenize
 from bs4 import BeautifulSoup
+from word2number import w2n
 
 # silly test html
-raw_html = """<a href='#'>hi</a>            <b>.hello</b>. This is us. You'll"""
+raw_html = """<a href='#'>hi</a>            <b>.hello</b>. This is us. You'll. One million"""
 cleantext = BeautifulSoup(raw_html, "lxml").text
 
 def removeWhiteSpaces(sentence):
@@ -75,10 +76,34 @@ def keyPhraseExtraction(cleantext):
     return keyPhraseList
     
 
+def convertToNumbers(text):
+    newText = list()
+    for test_str in text:
+        # Convert numeric words to numbers
+        # Using word2number
+        try:
+            res = w2n.word_to_num(test_str)
+        except:
+            res = test_str
+        newText.append(str(res))
+    return newText
+
+def removeNumbers(text):
+    newText = list()
+    for ini_string in text:
+        # using join and isdigit
+        # to remove numeric digits from string
+        res = ''.join([i for i in ini_string if not i.isdigit()])
+        newText.append(res)
+    return newText
+
+# initializing string
 text = removeWhiteSpaces(cleantext)
 text = getSentences(text)
 text = removeContractions(text)
 text = removeSpecialChars(text)
 text = toLowerCase(text)
+text = convertToNumbers(text)
+text = removeNumbers(text)
 text = textTokenize(text)
 listOfKeyPhrases = keyPhraseExtraction(cleantext)
