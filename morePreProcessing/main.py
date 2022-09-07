@@ -1,4 +1,5 @@
 #3.	Apply various other text pre-processing techniques for any given text : Stop Word  Removal, Lemmatization / Stemming
+from os import remove
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords 
 import nltk
@@ -39,5 +40,6 @@ def lemmatizeWords(words):
     return newWords
 
 print("Before pre processing:"+sentence)
+print("After removal of stop-words:"+str(removeStopWords([sentence])))
 print("After stemming:"+str(stemmingWords(sentence)))
 print("After lemmatization:"+str(lemmatizeWords(words)))
