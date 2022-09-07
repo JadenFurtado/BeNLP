@@ -38,3 +38,6 @@ def lemmatizeWords(words):
         newWords.append([wordNoun,wordVerb])
     return newWords
 
+print("Before pre processing:"+sentence)
+print("After stemming:"+str(stemmingWords(sentence)))
+print("After lemmatization:"+str(lemmatizeWords(words)))

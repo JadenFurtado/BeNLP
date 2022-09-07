@@ -1,11 +1,3 @@
-
-"""
-TO DO:
-●	Convert number words to numeric form
-●	Remove numbers
-●	Phrase extraction
-●	Script Validation
-"""
 import re
 import nltk
 import pke
@@ -98,12 +90,22 @@ def removeNumbers(text):
     return newText
 
 # initializing string
+print("after removing HTML tags:"+cleantext)
 text = removeWhiteSpaces(cleantext)
+print("after removing extra whitespace:"+text)
 text = getSentences(text)
+print("getting sentences:"+str(text))
 text = removeContractions(text)
+print("removing contractions:"+str(text))
 text = removeSpecialChars(text)
+print("removing special chars:"+str(text))
 text = toLowerCase(text)
-text = convertToNumbers(text)
-text = removeNumbers(text)
+print("lowering case:"+str(text))
 text = textTokenize(text)
+print("tokenizing text:"+str(text))
+text = convertToNumbers(text)
+print("converting text to numbers:"+str(text))
+text = removeNumbers(text)
+print("removing numbers:"+str(text))
 listOfKeyPhrases = keyPhraseExtraction(cleantext)
+print("list of Key phrases"+str(listOfKeyPhrases))
